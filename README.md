@@ -1,12 +1,12 @@
 # TikTok Ads
 
-Source preview for Despia V3. This snapshot requires the runtime update currently awaiting release and an approved extension-enabled native build. Uploading these files does not change an installed app.
+Source preview for Despia V3. The runtime update and automatic discovery rollout are awaiting release. Rebuild and install the native app to include these files; uploading them does not change an installed app.
 
 A native advertiser SDK extension using TikTok App Events SDK 1.7.2 on iOS and 1.7.1 on Android, independently of AppsFlyer. It sends custom and standard events and purchases through the SDK. It does not display Pangle ads.
 
 Part of Despia V3 Extensions. First-party V4 support comes through the new package registry.
 
-Source preview. Requires the upcoming approved V3 extension build release. Verify campaign attribution in your advertising account before launch.
+Verify campaign attribution in your advertising account before launch.
 
 ## Web frameworks and app builders
 
@@ -17,9 +17,11 @@ Use the Despia SDK with React, Vue, Svelte, Next.js, TanStack or HTML5. Projects
 1. Copy manifest.json, ios/ and android/ into public/despia/tiktokads/ in your web app.
 2. Add "tiktokads" to public/despia/extensions.json: `{ "extensions": ["tiktokads"] }`. This minimal index requires the no-app-identity runtime change in the build; legacy indexes remain compatible.
 3. Replace the native configuration placeholders in TikTokAdsExtension.swift and TikTokAdsExtension.java with the app SDK configuration provided by TikTok. Never embed a server-side Marketing API credential. Do not log this configuration or put it in a page URL.
-4. Approve the source and dependency closure, rebuild and install the native app.
+4. After the runtime rollout, rebuild and install the native app.
 
-The Swift package is pinned to commit 2a3a35560c2c0547f74869c58160946e29c0932c. Android uses com.github.tiktok:tiktok-business-android-sdk:1.7.1 from JitPack, plus the vendor's Android lifecycle, Billing and Install Referrer dependencies. Approval fetches and pins them. Automatic event logging, payment tracking and enhanced data postback are requested off in native configuration. No SDK is initialized on app launch by this extension.
+Automatic discovery is not yet deployed. Signed build verification binds source hashes, dependency pins, app identity and final artifacts. It is separate from human code review and does not require a per-app enrollment switch. The included policy file is build verification metadata.
+
+The Swift package is pinned to commit 2a3a35560c2c0547f74869c58160946e29c0932c. Android uses com.github.tiktok:tiktok-business-android-sdk:1.7.1 from JitPack, plus the vendor's Android lifecycle, Billing and Install Referrer dependencies. Signed build verification fetches and pins them. Automatic event logging, payment tracking and enhanced data postback are requested off in native configuration. No SDK is initialized on app launch by this extension.
 
 ## JavaScript SDK
 
@@ -29,7 +31,7 @@ Install the published SDK in your web app:
 npm install despia-native
 ```
 
-Import `despia` directly from `despia-native`. The examples use SDK 1.0.28. Run native calls from browser event handlers or mounted client hooks; importing the SDK during server rendering is safe. The installed Despia V3 app must include the approved extension.
+Import `despia` directly from `despia-native`. The examples use SDK 1.0.28. Run native calls from browser event handlers or mounted client hooks; importing the SDK during server rendering is safe. The installed Despia V3 app must include the extension.
 
 Pass the route's exact output variable as the second argument. The SDK resolves an object whose matching property contains the full native envelope: `ok`, `code`, `error` and `data`, with runtime metadata. A native `ok: false` answer does not reject the SDK promise. Check `ok` before reading `data`. A single watched value becomes `undefined` after 30 seconds without an answer. Await calls using the same output variable sequentially.
 
@@ -84,11 +86,11 @@ The adapter refuses bridge event calls while disabled. iOS uses TikTok setTracki
 
 Android Advertising ID collection is disabled in this starter. Native configuration can be adapted to the app's permitted collection model and base app Advertising ID permission. The SDK includes Android install referrer support. iOS SKAdNetwork support uses the SDK's defaults; configure campaign conversion settings in TikTok. Avoid competing conversion-value owners or duplicated purchase events.
 
-SKAdNetworkItems under ios.app.info_plist is customer-editable and starts empty. This Apple key describes the ad networks used by a source app displaying ads. It is not an Android setting or a substitute for the advertised app's SDK and campaign configuration. Add only current identifiers your own integration requires, then approve and rebuild. Existing app-configured purpose descriptions take priority. The runtime update under review also permits a required description from the approved manifest when the app configuration has none.
+SKAdNetworkItems under ios.app.info_plist is customer-editable and starts empty. This Apple key describes the ad networks used by a source app displaying ads. It is not an Android setting or a substitute for the advertised app's SDK and campaign configuration. Add only current identifiers your own integration requires, then rebuild to verify the changed source and dependency pins. Existing app-configured purpose descriptions take priority. The runtime update under review also permits a required description from the verified manifest when the app configuration has none.
 
 An existing initialized TikTok SDK is left to its original integration: iOS checks ownership at the first true consent call; Android checks it during configure. Adapt the native code if the app deliberately shares that SDK. The SDK can use app-wide lifecycle and exception handling, so test it with the app's other native integrations.
 
-Current V3 iOS target is 16.6 and later. Android module minSdk24 and compileSdk36. Billing is a vendor dependency, not a purchase UI supplied by this extension; review its merged permission and the base billing configuration during approval.
+Current V3 iOS target is 16.6 and later. Android module minSdk24 and compileSdk36. Billing is a vendor dependency, not a purchase UI supplied by this extension; review its merged permission and the base billing configuration during build verification.
 
 [Despia V3 Extensions documentation](https://setup.despia.com/experiments/v3-extensions) and [extension skill](https://github.com/despia-legacy/extension-skill).
 
