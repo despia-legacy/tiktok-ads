@@ -12,10 +12,8 @@ enum TikTokAdsConfiguration {
 @MainActor
 final class TikTokAdsExtension: NativeExtension {
     private var configured = false
-    private var configuring = false
     private var enabled = false
     private var sdkReady = false
-    private var consentGeneration: UInt64 = 0
     required init() {}
     func didLaunch(_ context: NativeExtContext) {}
     func handle(_ call: NativeExtCall) async -> NativeExtResult {
@@ -37,9 +35,6 @@ final class TikTokAdsExtension: NativeExtension {
             if call.route == "consent" {
                 guard call.isActive else { return .error(code: "timeout", message: "The consent request expired") }
                 let requested = call.params["enabled"] as? Bool ?? false
-                if requested && configuring { return .error(code: "busy", message: "SDK initialization is in progress") }
-                consentGeneration &+= 1
-                let generation = consentGeneration
                 if !requested {
                     enabled = false
                     if sdkReady { TikTokBusiness.setTrackingEnabled(false) }
@@ -56,18 +51,15 @@ final class TikTokAdsExtension: NativeExtension {
                     config.disableAutomaticTracking()
                     config.disablePaymentTracking()
                     config.disableAutoEnhancedDataPostbackEvent()
-                    configuring = true
-                    defer { configuring = false }
-                    do { try await TikTokBusiness.initializeSdk(config) }
-                    catch { return .error(code: "sdk_error", message: "TikTok SDK initialization failed") }
+                    let initialize: (TikTokConfig?) -> Void = TikTokBusiness.initializeSdk
+                    initialize(config)
+                    guard TikTokBusiness.isInitialized() else {
+                        return .error(code: "sdk_error", message: "TikTok SDK initialization did not complete")
+                    }
                     sdkReady = true
                     guard call.isActive else {
                         TikTokBusiness.setTrackingEnabled(false)
                         return .error(code: "timeout", message: "SDK initialization completed after the route expired")
-                    }
-                    guard generation == consentGeneration else {
-                        TikTokBusiness.setTrackingEnabled(false)
-                        return .ok(["enabled": false])
                     }
                 }
                 TikTokBusiness.setTrackingEnabled(true)
