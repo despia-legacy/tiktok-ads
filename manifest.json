@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "bridge": {
+    "routes": [
+      {
+        "name": "configure",
+        "params": {}
+      },
+      {
+        "name": "status",
+        "params": {}
+      },
+      {
+        "name": "event",
+        "params": {
+          "name": {
+            "type": "string",
+            "max": 40,
+            "required": true
+          },
+          "properties": {
+            "type": "string",
+            "max": 4096
+          },
+          "event_id": {
+            "type": "string",
+            "max": 128
+          },
+          "value": {
+            "type": "string",
+            "max": 32
+          }
+        }
+      },
+      {
+        "name": "purchase",
+        "params": {
+          "amount": {
+            "type": "string",
+            "max": 32,
+            "required": true
+          },
+          "currency": {
+            "type": "string",
+            "max": 3,
+            "required": true
+          },
+          "properties": {
+            "type": "string",
+            "max": 4096
+          },
+          "event_id": {
+            "type": "string",
+            "max": 128
+          }
+        }
+      },
+      {
+        "name": "flush",
+        "params": {}
+      },
+      {
+        "name": "user",
+        "params": {
+          "id": {
+            "type": "string",
+            "max": 256
+          }
+        }
+      },
+      {
+        "name": "consent",
+        "params": {
+          "enabled": {
+            "type": "bool",
+            "required": true
+          }
+        }
+      }
+    ]
+  },
+  "ios": {
+    "packages": [
+      {
+        "name": "tiktok-business-ios-sdk",
+        "remote": {
+          "url": "https://github.com/tiktok/tiktok-business-ios-sdk",
+          "revision": "2a3a35560c2c0547f74869c58160946e29c0932c"
+        },
+        "products": [
+          "TikTokBusinessSDK"
+        ]
+      }
+    ],
+    "package_resolved": "ios/Package.resolved",
+    "app": {
+      "entry_type": "TikTokAdsExtension",
+      "sources": [
+        "ios/app/TikTokAdsExtension.swift"
+      ],
+      "packages": [
+        "TikTokBusinessSDK"
+      ],
+      "frameworks": [
+        "AppTrackingTransparency"
+      ],
+      "lifecycle": [
+        "launch"
+      ],
+      "custom_keys": true,
+      "info_plist": {
+        "SKAdNetworkItems": []
+      }
+    }
+  },
+  "android": {
+    "entry_class": "despia.ext.tiktokads.TikTokAdsExtension",
+    "lifecycle": [
+      "application_create"
+    ],
+    "modules": [
+      {
+        "kind": "custom",
+        "name": "tiktokads",
+        "dir": "android/tiktokads",
+        "link": "implementation"
+      }
+    ]
+  }
+}

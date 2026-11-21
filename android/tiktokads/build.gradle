@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+android {
+    namespace 'despia.ext.tiktokads'
+    compileSdk 36
+    defaultConfig { minSdk 24 }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20250517'
+    implementation project(':nativeext-api')
+    implementation 'com.github.tiktok:tiktok-business-android-sdk:1.7.1'
+    implementation 'com.android.installreferrer:installreferrer:2.2'
+    implementation 'com.android.billingclient:billing:8.0.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.8.7'
+}

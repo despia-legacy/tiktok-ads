@@ -1,0 +1,93 @@
+Despia V3 Extension Source-Available Commercial License
+Version 1.3, effective 21 November 2026
+
+Copyright (c) 2026 Despia LLC-FZ. All rights reserved.
+
+Licensor: Despia LLC-FZ
+Meydan Grandstand, 6th Floor, Meydan Road
+Nad Al Sheba, Dubai, United Arab Emirates
+https://despia.com
+Contact: hey@despia.com
+
+1. Scope and inspection
+
+This license covers the Despia-authored extension source code, examples and
+associated documentation in this repository (the Software). The source is
+available for inspection and understanding. Anyone with lawful access may read
+and review it. Anyone with lawful access may download or make a local copy
+solely to read, inspect and understand the Software. This inspection permission
+does not allow modification, building, execution, deployment or redistribution,
+except for GitHub forks solely to read, inspect and understand the Software.
+This is a proprietary, source-available license. It is not an open-source license.
+
+2. Licensed application
+
+Except for inspection copies and GitHub forks permitted by section 1, to copy,
+modify,
+build, execute or deploy the Software, you must hold a valid Despia commercial
+license for the particular application and operating system
+where it is used, and maintain a valid Despia project for that application.
+The standard commercial license price is USD 249 per application per operating
+system. iOS and Android require separate licenses. A license for one application
+does not cover another application. A separate written agreement with Despia
+may provide different commercial terms.
+
+3. Permitted use
+
+Subject to section 2, Despia grants you a non-exclusive license to copy and
+modify the Software, build it into the licensed application's Despia V3 runtime,
+and distribute and operate that application for its end users. You may host the
+extension source files on the application's website as required by the Despia
+extension build process. Such hosting does not grant visitors a license to use
+those files in another application.
+
+You may keep GitHub forks or private version-control copies of
+the Software, customize it, and use it as a reference to develop new
+functionality for that licensed application, subject to section 2.
+
+Your employees and contractors may work with the Software on your behalf for
+the licensed application under these same conditions. You are responsible for
+their compliance. End users may run the extension as part of your licensed
+application without purchasing a separate developer license.
+
+4. Conditions
+
+Keep this license and applicable copyright and attribution notices with copies
+of the Software. You may not sell, sublicense or distribute the Software as a
+standalone extension, library or development product, or use it outside a
+licensed Despia application, without separate written permission from Despia.
+GitHub forks expressly permitted by sections 1 and 3 are an exception to the
+standalone distribution restriction. They must retain this license and applicable
+notices and must not grant different license rights to the Software.
+Except for the rights expressly granted here, Despia reserves all rights. This
+license does not grant rights to Despia trademarks or transfer ownership of
+your application's original code, content or data to Despia.
+
+5. Third-party material and earlier releases
+
+Third-party SDKs, dependencies and any separately identified third-party
+material remain governed by their own licenses and notices. This license does
+not replace those terms or restrict rights granted by them. It does not revoke
+permissions already granted for earlier copies under another license.
+
+6. Experimental V3 software
+
+The Software is an experimental Despia V3 extension. This license does not
+promise maintenance, support, store approval, attribution results or a port to
+Despia V4. Any separately agreed support obligations remain in effect.
+
+7. Warranty and liability
+
+To the extent permitted by applicable law, the Software is provided "as is"
+without warranties, including warranties of merchantability, fitness for a
+particular purpose or non-infringement. To that same extent, Despia is not
+liable for damages arising from use of the Software. Nothing here excludes
+liability or rights that applicable law does not allow to be excluded.
+
+8. Applicable terms
+
+Despia's service terms at https://despia.com/terms also govern your use of its
+services. For permissions to this Software, this license controls if the two
+conflict, unless a separate written agreement with Despia states otherwise.
+This license is governed by the laws of the United Arab Emirates as applied
+in Dubai.
