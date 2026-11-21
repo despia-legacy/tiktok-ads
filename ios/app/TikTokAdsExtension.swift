@@ -14,6 +14,8 @@ final class TikTokAdsExtension: NativeExtension {
     private var configured = false
     private var configuring = false
     private var enabled = false
+    private var sdkReady = false
+    private var consentGeneration: UInt64 = 0
     required init() {}
     func didLaunch(_ context: NativeExtContext) {}
     func handle(_ call: NativeExtCall) async -> NativeExtResult {
@@ -21,33 +23,55 @@ final class TikTokAdsExtension: NativeExtension {
             if call.route == "status" { return .ok(["configured": configured, "enabled": enabled, "sdk": "1.7.2"]) }
             if call.route == "configure" {
                 if configured { return .ok(["configured": true, "enabled": enabled]) }
-                guard !configuring else { return .error(code: "busy", message: "SDK initialization is in progress") }
-                guard !TikTokBusiness.isInitialized() else {
-                    return .error(code: "already_configured", message: "Another integration already owns TikTok SDK")
-                }
-                guard !TikTokAdsConfiguration.appID.hasPrefix("REPLACE_"),
+                guard !TikTokAdsConfiguration.appID.isEmpty, !TikTokAdsConfiguration.appID.hasPrefix("REPLACE_"),
+                      !TikTokAdsConfiguration.tikTokAppID.isEmpty,
                       !TikTokAdsConfiguration.tikTokAppID.hasPrefix("REPLACE_"),
-                      !TikTokAdsConfiguration.appSDKAccessToken.hasPrefix("REPLACE_"),
-                      let config = TikTokConfig(accessToken: TikTokAdsConfiguration.appSDKAccessToken,
-                          appId: TikTokAdsConfiguration.appID, tiktokAppId: TikTokAdsConfiguration.tikTokAppID) else {
+                      !TikTokAdsConfiguration.appSDKAccessToken.isEmpty,
+                      !TikTokAdsConfiguration.appSDKAccessToken.hasPrefix("REPLACE_") else {
                     return .error(code: "not_configured", message: "Set native app SDK configuration before approval")
                 }
-                config.disableTracking()
-                config.disableAutomaticTracking()
-                config.disablePaymentTracking()
-                config.disableAutoEnhancedDataPostbackEvent()
-                configuring = true
-                defer { configuring = false }
-                do { try await TikTokBusiness.initializeSdk(config) }
-                catch { return .error(code: "sdk_error", message: "TikTok SDK initialization failed") }
                 configured = true
-                guard call.isActive else { return .error(code: "timeout", message: "SDK initialization completed after the route expired") }
                 return .ok(["configured": true, "enabled": false])
             }
             guard configured else { return .error(code: "not_configured", message: "Call configure first") }
             if call.route == "consent" {
-                enabled = call.params["enabled"] as? Bool ?? false
-                TikTokBusiness.setTrackingEnabled(enabled)
+                guard call.isActive else { return .error(code: "timeout", message: "The consent request expired") }
+                let requested = call.params["enabled"] as? Bool ?? false
+                if requested && configuring { return .error(code: "busy", message: "SDK initialization is in progress") }
+                consentGeneration &+= 1
+                let generation = consentGeneration
+                if !requested {
+                    enabled = false
+                    if sdkReady { TikTokBusiness.setTrackingEnabled(false) }
+                    return .ok(["enabled": false])
+                }
+                if !sdkReady {
+                    guard !TikTokBusiness.isInitialized() else {
+                        return .error(code: "already_configured", message: "Another integration already owns TikTok SDK")
+                    }
+                    guard let config = TikTokConfig(accessToken: TikTokAdsConfiguration.appSDKAccessToken,
+                        appId: TikTokAdsConfiguration.appID, tiktokAppId: TikTokAdsConfiguration.tikTokAppID) else {
+                        return .error(code: "not_configured", message: "Set native app SDK configuration before approval")
+                    }
+                    config.disableAutomaticTracking()
+                    config.disablePaymentTracking()
+                    config.disableAutoEnhancedDataPostbackEvent()
+                    configuring = true
+                    defer { configuring = false }
+                    do { try await TikTokBusiness.initializeSdk(config) }
+                    catch { return .error(code: "sdk_error", message: "TikTok SDK initialization failed") }
+                    sdkReady = true
+                    guard call.isActive else {
+                        TikTokBusiness.setTrackingEnabled(false)
+                        return .error(code: "timeout", message: "SDK initialization completed after the route expired")
+                    }
+                    guard generation == consentGeneration else {
+                        TikTokBusiness.setTrackingEnabled(false)
+                        return .ok(["enabled": false])
+                    }
+                }
+                TikTokBusiness.setTrackingEnabled(true)
+                enabled = true
                 return .ok(["enabled": enabled])
             }
             guard enabled else { return .error(code: "consent_required", message: "Enable event collection first") }

@@ -47,6 +47,7 @@ if (!configured?.ok) throw new Error(configured?.error ?? 'No native answer');
 const consentReply = await despia('extension://tiktokads/consent?enabled=true', ['tiktokadsConsentResult']);
 const consent = consentReply.tiktokadsConsentResult;
 if (!consent?.ok) throw new Error(consent?.error ?? 'No native answer');
+if (!consent.data.enabled) throw new Error('Event collection is disabled');
 
 const loggedReply = await despia('extension://tiktokads/event?name=LaunchAPP', ['tiktokadsEventResult']);
 const logged = loggedReply.tiktokadsEventResult;
@@ -63,7 +64,7 @@ if (!purchase?.ok) throw new Error(purchase?.error ?? 'No native answer');
 
 | Route | Parameters | Successful data | SDK output variable |
 | --- | --- | --- | --- |
-| configure | None | configured, enabled. Initializes SDK with transmission disabled. | `tiktokadsConfigureResult` |
+| configure | None | configured, enabled. iOS checks native configuration without starting the SDK; Android initializes with automatic transmission off. | `tiktokadsConfigureResult` |
 | status | None | configured, enabled, sdk | `tiktokadsStatusResult` |
 | consent | enabled boolean required | iOS: enabled. Android: configured, enabled. | `tiktokadsConsentResult` |
 | event | name required, optional properties JSON object string, value numeric string, event_id string | accepted: true | `tiktokadsEventResult` |
@@ -77,13 +78,15 @@ Properties are a JSON object and preserve nested ecommerce objects, arrays and n
 
 This extension never requests ATT. TikTok's current iOS SDK does not automatically show that dialog. Use Despia's existing trackingconsent:// call separately, with the tracking_usage purpose description enabled in the native build. Collection consent is separate from ATT. Reapply the app's saved choice after every process launch.
 
+On iOS, configured means the native values are present, not that the SDK has started or the vendor account has accepted them. The first consent call with enabled=true initializes the SDK with automatic event, payment and enhanced postback logging disabled. Initialization can fail or expire. An SDK already initialized by another integration is left unchanged and returns already_configured at this first opt-in. A false choice before initialization makes no SDK call. A later false choice during initialization wins over the earlier true request; that earlier request returns enabled=false after initialization completes. Read enabled before sending events.
+
 The adapter refuses bridge event calls while disabled. iOS uses TikTok setTrackingEnabled(false), which can cache SDK events for later according to the vendor API. Android has startTrack but no matching stopTrack API in 1.7.1. On a false consent call this adapter destroys its SDK instance and requires configure again before collection resumes. Neither path erases events already transmitted or guarantees cancellation of an in-flight request. Review the vendor's collection and retention behavior for your app.
 
 Android Advertising ID collection is disabled in this starter. Native configuration can be adapted to the app's permitted collection model and base app Advertising ID permission. The SDK includes Android install referrer support. iOS SKAdNetwork support uses the SDK's defaults; configure campaign conversion settings in TikTok. Avoid competing conversion-value owners or duplicated purchase events.
 
 SKAdNetworkItems under ios.app.info_plist is customer-editable and starts empty. This Apple key describes the ad networks used by a source app displaying ads. It is not an Android setting or a substitute for the advertised app's SDK and campaign configuration. Add only current identifiers your own integration requires, then approve and rebuild. Existing app-configured purpose descriptions take priority. The runtime update under review also permits a required description from the approved manifest when the app configuration has none.
 
-An existing initialized TikTok SDK is left to its original integration: configure returns already_configured. Adapt the native code if the app deliberately shares that SDK. The SDK can use app-wide lifecycle and exception handling, so test it with the app's other native integrations.
+An existing initialized TikTok SDK is left to its original integration: iOS checks ownership at the first true consent call; Android checks it during configure. Adapt the native code if the app deliberately shares that SDK. The SDK can use app-wide lifecycle and exception handling, so test it with the app's other native integrations.
 
 Current V3 iOS target is 16.6 and later. Android module minSdk24 and compileSdk36. Billing is a vendor dependency, not a purchase UI supplied by this extension; review its merged permission and the base billing configuration during approval.
 
