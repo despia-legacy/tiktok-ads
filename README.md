@@ -23,40 +23,53 @@ The Swift package is pinned to commit 2a3a35560c2c0547f74869c58160946e29c0932c. 
 
 ## JavaScript SDK
 
-Install the SDK in your web app:
+Install the published SDK in your web app:
 
 ```sh
 npm install despia-native
 ```
 
-Copy `example/src/lib/despia-extension.js` to your app's `src/lib/` and adjust the import path if needed. It imports `despia` from `despia-native`, calls the SDK and returns the native answer's `data`. It checks native error envelopes and throws an error with their `code`. The SDK itself resolves native `ok: false` envelopes; it does not reject them. A single watched value becomes `undefined` after 30 seconds, which this helper reports as `sdk_timeout`.
+Import `despia` directly from `despia-native`. The examples use SDK 1.0.28. Run native calls from browser event handlers or mounted client hooks; importing the SDK during server rendering is safe. The installed Despia V3 app must include the approved extension.
 
-Each helper call forwards a unique native callback into a separate watched value, so overlapping calls do not share response globals. `onExtensionEvent` registers the declared native event callbacks and returns a cleanup function. Events are callbacks, not values you can poll from the SDK proxy.
-
-Importing the SDK is safe during server rendering. Run calls and event subscriptions only from browser click handlers or mounted client hooks. React and Vue can use the browser APIs used by this helper; in Next.js and other server-rendered apps, keep these calls in client code. The extension must be included in the installed Despia V3 app; a browser preview has no native extension features.
+Pass the route's exact output variable as the second argument. The SDK resolves an object whose matching property contains the full native envelope: `ok`, `code`, `error` and `data`, with runtime metadata. A native `ok: false` answer does not reject the SDK promise. Check `ok` before reading `data`. A single watched value becomes `undefined` after 30 seconds without an answer. Await calls using the same output variable sequentially.
 
 ## Call from the page
 
+Apply the user's collection choice before sending events. Encode JSON query values with `encodeURIComponent(JSON.stringify(...))`.
+
 ```javascript
-import { extensionCall } from './lib/despia-extension.js';
-const tiktok = (route, params) => extensionCall('tiktokads', route, params);
-await tiktok('configure');
-await tiktok('consent', { enabled: true });
-await tiktok('event', { name: 'LaunchAPP' });
-await tiktok('purchase', { amount: '12.50', currency: 'USD', properties: { content_id: 'example-product' } });
+import despia from 'despia-native';
+
+const configuredReply = await despia('extension://tiktokads/configure', ['tiktokadsConfigureResult']);
+const configured = configuredReply.tiktokadsConfigureResult;
+if (!configured?.ok) throw new Error(configured?.error ?? 'No native answer');
+
+const consentReply = await despia('extension://tiktokads/consent?enabled=true', ['tiktokadsConsentResult']);
+const consent = consentReply.tiktokadsConsentResult;
+if (!consent?.ok) throw new Error(consent?.error ?? 'No native answer');
+
+const loggedReply = await despia('extension://tiktokads/event?name=LaunchAPP', ['tiktokadsEventResult']);
+const logged = loggedReply.tiktokadsEventResult;
+if (!logged?.ok) throw new Error(logged?.error ?? 'No native answer');
+
+const properties = { content_id: 'example-product' };
+const purchaseReply = await despia(
+  `extension://tiktokads/purchase?amount=12.50&currency=USD&properties=${encodeURIComponent(JSON.stringify(properties))}`,
+  ['tiktokadsPurchaseResult']
+);
+const purchase = purchaseReply.tiktokadsPurchaseResult;
+if (!purchase?.ok) throw new Error(purchase?.error ?? 'No native answer');
 ```
 
-Await each dependent operation. The helper checks the V3 result envelope before returning its data.
-
-| Route | Parameters | Successful data |
-| --- | --- | --- |
-| configure | None | configured, enabled. Initializes SDK with transmission disabled. |
-| status | None | configured, enabled, sdk |
-| consent | enabled boolean required | iOS: enabled. Android: configured, enabled. |
-| event | name required, optional properties JSON object string, value numeric string, event_id string | accepted: true |
-| purchase | amount numeric string and currency uppercase three-letter code required, optional properties, event_id | accepted: true. Uses TikTok Purchase event. |
-| user | Optional id, omit to log out | accepted: true |
-| flush | None | accepted: true. Requests SDK transmission, not a server receipt. |
+| Route | Parameters | Successful data | SDK output variable |
+| --- | --- | --- | --- |
+| configure | None | configured, enabled. Initializes SDK with transmission disabled. | `tiktokadsConfigureResult` |
+| status | None | configured, enabled, sdk | `tiktokadsStatusResult` |
+| consent | enabled boolean required | iOS: enabled. Android: configured, enabled. | `tiktokadsConsentResult` |
+| event | name required, optional properties JSON object string, value numeric string, event_id string | accepted: true | `tiktokadsEventResult` |
+| purchase | amount numeric string and currency uppercase three-letter code required, optional properties, event_id | accepted: true. Uses TikTok Purchase event. | `tiktokadsPurchaseResult` |
+| user | Optional id, omit to log out | accepted: true | `tiktokadsUserResult` |
+| flush | None | accepted: true. Requests SDK transmission, not a server receipt. | `tiktokadsFlushResult` |
 
 Properties are a JSON object and preserve nested ecommerce objects, arrays and null values for the SDK. The route limits the encoded properties string to 4096 characters. Explicit value and amount parameters must be finite numbers. Read manifest.json for each string length limit. Errors include not_configured, already_configured, consent_required, bad_request, sdk_error and busy during initialization. iOS can time out if initialization finishes after the bridge deadline. No event is started after that late initialization answer.
 
