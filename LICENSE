@@ -1,5 +1,5 @@
 Despia V3 Extension Source-Available Commercial License
-Version 1.3, effective 21 November 2026
+Version 1.4, effective 22 November 2026
 
 Copyright (c) 2026 Despia LLC-FZ. All rights reserved.
 
@@ -12,56 +12,63 @@ Contact: hey@despia.com
 1. Scope and inspection
 
 This license covers the Despia-authored extension source code, examples and
-associated documentation in this repository (the Software). The source is
-available for inspection and understanding. Anyone with lawful access may read
-and review it. Anyone with lawful access may download or make a local copy
-solely to read, inspect and understand the Software. This inspection permission
-does not allow modification, building, execution, deployment or redistribution,
-except for GitHub forks solely to read, inspect and understand the Software.
-This is a proprietary, source-available license. It is not an open-source license.
+associated documentation in this repository (the Software). Anyone with lawful
+access may read, inspect and download the Software and keep inspection copies or
+GitHub forks under section 4. The Software is proprietary and source available.
 
-2. Licensed application
+2. Development, evaluation and testing
 
-Except for inspection copies and GitHub forks permitted by section 1, to copy,
-modify,
-build, execute or deploy the Software, you must hold a valid Despia commercial
-license for the particular application and operating system
-where it is used, and maintain a valid Despia project for that application.
-The standard commercial license price is USD 249 per application per operating
-system. iOS and Android require separate licenses. A license for one application
-does not cover another application. A separate written agreement with Despia
-may provide different commercial terms.
+Anyone with lawful access may copy, modify, build and run the Software for
+development, evaluation and testing with a Despia V3 app. No paid Despia
+license is required for this noncommercial use. You may install test builds
+on your devices and share test builds with people testing the app for you.
+You may develop and test an app you intend to release commercially later.
 
-3. Permitted use
+This grant covers development and testing only. You need the applicable
+license under section 3 before using the Software in a production release,
+operating it commercially or using it to generate revenue.
 
-Subject to section 2, Despia grants you a non-exclusive license to copy and
-modify the Software, build it into the licensed application's Despia V3 runtime,
-and distribute and operate that application for its end users. You may host the
-extension source files on the application's website as required by the Despia
-extension build process. Such hosting does not grant visitors a license to use
-those files in another application.
+3. Commercial use in a licensed application
 
-You may keep GitHub forks or private version-control copies of
-the Software, customize it, and use it as a reference to develop new
-functionality for that licensed application, subject to section 2.
+To use the Software commercially or deploy it in production, you must hold
+a valid Despia commercial license and maintain a valid Despia project for
+the particular application. The license must cover the operating system on
+which you deploy the Software.
 
-Your employees and contractors may work with the Software on your behalf for
-the licensed application under these same conditions. You are responsible for
-their compliance. End users may run the extension as part of your licensed
-application without purchasing a separate developer license.
+A Despia Solo Pack covers one application on its licensed operating system,
+iOS or Android. A Despia Hybrid Pack covers one application on both iOS and
+Android. An existing applicable Despia license includes use of all Despia V3
+extension templates you have lawful access to. No separate extension purchase
+or per-extension fee applies. You may also build and use any number of your
+own extensions for the licensed application and operating system.
 
-4. Conditions
+Subject to these conditions, Despia grants you a non-exclusive license to copy,
+modify and build the Software into that application's Despia V3 runtime and
+distribute and operate that application for its end users. End users may run
+the extension as part of your licensed application without buying a separate
+developer license. A license for one application does not cover another.
+A separate written agreement with Despia may provide different terms.
 
-Keep this license and applicable copyright and attribution notices with copies
-of the Software. You may not sell, sublicense or distribute the Software as a
-standalone extension, library or development product, or use it outside a
-licensed Despia application, without separate written permission from Despia.
-GitHub forks expressly permitted by sections 1 and 3 are an exception to the
-standalone distribution restriction. They must retain this license and applicable
-notices and must not grant different license rights to the Software.
-Except for the rights expressly granted here, Despia reserves all rights. This
-license does not grant rights to Despia trademarks or transfer ownership of
-your application's original code, content or data to Despia.
+4. Copies and conditions
+
+You may keep GitHub forks or private version-control copies, customize the
+Software and use it as a reference under sections 1 through 3. You may host
+the extension source on the application's website for the Despia V3 build
+process. Hosting does not grant visitors permission to use the Software in
+another application beyond the rights in this license.
+
+Keep this license and applicable copyright and attribution notices with your
+copies. You may not sell, sublicense or distribute the Software as a standalone
+extension, library or development product without separate written permission
+from Despia. GitHub forks under this license are an exception to the standalone
+distribution restriction. They must retain this license and applicable notices
+and may not grant different license rights to the Software.
+
+Employees and contractors may work with the Software on your behalf under
+these conditions. You are responsible for their compliance. Despia reserves
+all rights not expressly granted here. This license does not grant rights
+to Despia trademarks or transfer ownership of your application's original
+code, content or data to Despia.
 
 5. Third-party material and earlier releases
 

@@ -98,14 +98,21 @@ Vendor sources: [TikTok iOS1.7.2](https://github.com/tiktok/tiktok-business-ios-
 
 ## License
 
-[Despia V3 Extension Source-Available Commercial License](LICENSE).
-You may inspect the source. Using or modifying this extension requires a valid
-Despia commercial license and a valid Despia project for the particular app.
-The standard price is **USD 249 per application per operating system**.
-iOS and Android require separate licenses. See [Despia](https://despia.com).
-Third-party SDKs keep their own licenses. Experimental V3 extensions do not
-include a commitment to maintenance or a V4 port.
+[Despia V3 Extension Source-Available Commercial License](LICENSE), version 1.4.
+This template is proprietary and source available.
 
-## Source and licensing
+You may inspect, fork, customize, build and run it for noncommercial development,
+evaluation and testing without a paid Despia license, including work on an app
+you plan to release commercially later.
 
-Browse, clone or fork this source to inspect it. Public GitHub forks remain public. For private development, clone into a private workspace or private repository. Modification, building, execution and deployment require a valid Despia commercial license and a valid Despia project for the application. The standard price is USD 249 per application per operating system. Licensed users may customize the extension or use it as a reference for new functionality in that licensed app. Keep the license and applicable notices. See [LICENSE](LICENSE) for the terms.
+Production or commercial use requires a valid Despia project and an applicable
+Despia license for that application and operating system. A Solo Pack covers
+its licensed OS, iOS or Android. A Hybrid Pack covers both. Your applicable
+license includes all provided V3 templates you have lawful access to and any
+number of your own extensions, with no separate extension purchase or
+per-extension fee.
+
+Keep the license and applicable notices. Third-party material keeps its own
+terms. Experimental V3 extensions do not include a commitment to maintenance
+or a V4 port. See [LICENSE](LICENSE) for the full terms and [Despia](https://despia.com)
+for licensing.
