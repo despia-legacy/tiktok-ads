@@ -10,11 +10,11 @@ android {
 }
 dependencies {
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.json:json:20250517'
+    testImplementation 'org.json:json:20260814'
     implementation project(':nativeext-api')
     implementation 'com.github.tiktok:tiktok-business-android-sdk:1.7.1'
     implementation 'com.android.installreferrer:installreferrer:2.2'
-    implementation 'com.android.billingclient:billing:8.0.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.8.7'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.8.7'
+    implementation 'com.android.billingclient:billing:8.3.0'
+    implementation 'androidx.lifecycle:lifecycle-process:2.10.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.10.0'
 }
